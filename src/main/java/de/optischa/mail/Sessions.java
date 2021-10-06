@@ -1,17 +1,13 @@
 package de.optischa.mail;
 
 import javax.mail.*;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeBodyPart;
-import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimeMultipart;
 import java.util.Properties;
 
-public class Mail {
+public class Sessions {
 
-    Session session;
+    private final Session session;
 
-    public Mail(boolean smtpAuth, String starttlsEnable, String host, String port, String sslTrust, String username, String password) {
+    public Sessions(boolean smtpAuth, String starttlsEnable, String host, String port, String sslTrust, String username, String password) {
         Properties properties = new Properties();
         properties.put("mail.smtp.auth", smtpAuth);
         properties.put("mail.smtp.starttls.enable", starttlsEnable);
@@ -27,7 +23,7 @@ public class Mail {
         });
     }
 
-    public Mail(String starttlsEnable, String host, String port, String sslTrust, String username, String password) {
+    public Sessions(String starttlsEnable, String host, String port, String sslTrust, String username, String password) {
         Properties properties = new Properties();
         properties.put("mail.smtp.auth", true);
         properties.put("mail.smtp.starttls.enable", starttlsEnable);
@@ -43,7 +39,7 @@ public class Mail {
         });
     }
 
-    public Mail(String host, String port, String sslTrust, String username, String password) {
+    public Sessions(String host, String port, String sslTrust, String username, String password) {
         Properties properties = new Properties();
         properties.put("mail.smtp.auth", true);
         properties.put("mail.smtp.starttls.enable", "true");
@@ -59,25 +55,7 @@ public class Mail {
         });
     }
 
-    public void sendEmail(String fromEmail, String toEmail, String title,String body) {
-        Message message = new MimeMessage(session);
-        try {
-            message.setFrom(new InternetAddress(fromEmail));
-            message.setRecipients(
-                    Message.RecipientType.TO, InternetAddress.parse(toEmail));
-            message.setSubject(title);
-
-            MimeBodyPart mimeBodyPart = new MimeBodyPart();
-            mimeBodyPart.setContent(body, "text/html");
-
-            Multipart multipart = new MimeMultipart();
-            multipart.addBodyPart(mimeBodyPart);
-
-            message.setContent(multipart);
-            Transport.send(message);
-        } catch (MessagingException e) {
-            e.printStackTrace();
-        }
+    public Session getSession() {
+        return session;
     }
-
 }

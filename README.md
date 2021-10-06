@@ -3,26 +3,48 @@
 Vereinfacht dir das senden von Email's in Java
 
 ```java
-  Mail mail = new Mail(true, "false", "mail.server.de", "25", "mail.server.de", "test@server.de", "");
-  mail.sendEmail("test@server.de", "to@email.de", "Title from email", "Message from body");
+public class TestEmail {
+    Session session = new Sessions(true, "false", "mail.server.de", "25", "mail.server.de", "test@server.de", "PASSWORD").getSession();
+    Sender.sendEmail("test@server.de", "server@gmail.com", "Hello World", List.of(new TopDefault()), session);
+}
 ```
-
-### Was kommt alles bei ```Message from body``` rein?
-
-Da kann man HTML Elemente oder auch normalen Text rein machen.
 
 ### Mehr Methoden
 
 Es gibt auch noch die Methoden:
 ```java
-   Mail mail = new Mail("false", "mail.server.de", "25", "mail.server.de", "test@server.de", "");
-   Mail mail = new Mail("mail.server.de", "25", "mail.server.de", "test@server.de", "");
+    Session session = new Sessions("false", "mail.server.de", "25", "mail.server.de", "test@server.de", "").getSession();
+    Session session = new Sessions("mail.server.de", "25", "mail.server.de", "test@server.de", "")getSession();
 ```
 
 Unterschied zwischen den ist, dass man beo den ganz oben alles Einstellen kann. Beim zweiten kann man noch weniger Einstellen.
 Beim dritten ist es amwenigsten.
 
-#### Sollte es fragen geben können sie mich gerne Anschreiben
+### Wie kann ich meine eigenen 'Components' schreiben?
+
+```java
+   public class TestComponent implements Component {
+
+    @Override
+    public String name() {
+        return null;
+    }
+
+    @Override
+    public String body() {
+        // Hier kommt der Text rein
+        return null;
+    }
+
+    @Override
+    public String file() {
+        // Falls es eine HTML Datei gibt in den resources Ordner und dann den Pfad angeben
+        return null;
+    }
+} 
+```
+
+Beim implements Component werden automatisch `name()`, `body()` und `file()` generiert.
 
 ##### Mitgearbeitet
 
