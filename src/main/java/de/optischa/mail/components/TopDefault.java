@@ -1,11 +1,8 @@
 package de.optischa.mail.components;
 
-public class TopDefault implements Component {
+import java.util.Map;
 
-    @Override
-    public String name() {
-        return null;
-    }
+public class TopDefault implements Component {
 
     @Override
     public String body() {

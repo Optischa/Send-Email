@@ -1,8 +1,9 @@
 package de.optischa.mail.components;
 
+import java.util.Map;
+
 public interface Component {
 
-    String name();
     String body();
     String file();
 
