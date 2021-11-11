@@ -1,12 +1,17 @@
-import de.optischa.mail.Mail;
+import de.optischa.mail.Sessions;
+import de.optischa.mail.Sender;
+import de.optischa.mail.components.TopDefault;
 import org.junit.Test;
+
+import javax.mail.Session;
+import java.util.List;
 
 public class EmailTest {
 
     @Test
     public void sendTestEmail() {
-        Mail mail = new Mail(true, "false", "mail.server.de", "25", "mail.server.de", "test@server.de", "");
-        mail.sendEmail("test@server.de", "to@email.de", "Title from email", "Message from body");
+        Session session = new Sessions(true, "false", "mail.example.de", "587", "mail.example.de", "user@example.de", "PASSWORD").getSession();
+        Sender.sendEmail("form@example.com", "to@example.com", "Hello World", List.of(new TopDefault(), new TopDefault()), session);
     }
 
 }

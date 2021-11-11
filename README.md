@@ -1,34 +1,43 @@
 # Send-Email
 
-Vereinfacht dir das senden von Email's in Java
+###Vereinfacht ihnen das Senden von E-Mails in Java. 
+
+
+## Verwendung
 
 ```java
 public class TestEmail {
-    Session session = new Sessions(true, "false", "mail.server.de", "25", "mail.server.de", "test@server.de", "PASSWORD").getSession();
-    Sender.sendEmail("test@server.de", "server@gmail.com", "Hello World", List.of(new TopDefault()), session);
+    Session session = new Sessions(true, "false", "mail.server.de", "587", "mail.example.de", "user@example.de", "PASSWORD").getSession();
+    Sender.sendEmail("server@example.com", "server@example.com", "Hello World", List.of(new TopDefault()), session);
 }
 ```
+
+## Standart Mailserver Ports
+
+| Service | Encryption | Port |
+| ------------- | ------------- | ------------- |
+| IMAP | STARTTLS | 143  |
+| IMAPS | SSL | 993  |
+| POP3 | STARTTLS | 110  |
+| POP3S | SSL | 995  |
+| SMTP | STARTTLS | 587 |
+| SMTPS | SSL | 465 |
 
 ### Mehr Methoden
 
 Es gibt auch noch die Methoden:
 ```java
-    Session session = new Sessions("false", "mail.server.de", "25", "mail.server.de", "test@server.de", "").getSession();
-    Session session = new Sessions("mail.server.de", "25", "mail.server.de", "test@server.de", "")getSession();
+Session session = new Sessions("false", "mail.server.de", "587", "mail.server.de", "test@server.de", "").getSession();
+Session session = new Sessions("mail.server.de", "587", "mail.server.de", "test@server.de", "")getSession();
 ```
 
 Unterschied zwischen den ist, dass man beo den ganz oben alles Einstellen kann. Beim zweiten kann man noch weniger Einstellen.
 Beim dritten ist es amwenigsten.
 
-### Wie kann ich meine eigenen 'Components' schreiben?
+### Wie kann ich meine eigenen `Components` schreiben?
 
 ```java
    public class TestComponent implements Component {
-
-    @Override
-    public String name() {
-        return null;
-    }
 
     @Override
     public String body() {
@@ -44,7 +53,7 @@ Beim dritten ist es amwenigsten.
 } 
 ```
 
-Beim implements Component werden automatisch `name()`, `body()` und `file()` generiert.
+Beim implements Component werden automatisch `body()` und `file()` generiert.
 
 ##### Mitgearbeitet
 
