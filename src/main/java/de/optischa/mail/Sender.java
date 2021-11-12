@@ -1,6 +1,8 @@
 package de.optischa.mail;
 
+import com.sun.mail.util.MailLogger;
 import de.optischa.mail.components.Component;
+import de.optischa.mail.logging.EmailLogging;
 
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
@@ -12,16 +14,19 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 public class Sender {
+
+    private static EmailLogging emailLogging = new EmailLogging();
 
     public static void sendEmail(String fromEmail, String toEmail, String title, String body, Session session) {
         Message message = new MimeMessage(session);
         sendMessage(message, body, title, toEmail, fromEmail, null);
     }
 
-    public static void sendEmail(String fromEmail, String fromName,String toEmail, String title, String body, Session session) {
+    public static void sendEmail(String fromEmail, String fromName, String toEmail, String title, String body, Session session) {
         Message message = new MimeMessage(session);
         sendMessage(message, body, title, toEmail, fromEmail, fromName);
     }
@@ -33,7 +38,7 @@ public class Sender {
         }
     }
 
-    public static void sendArrayEmail(String fromEmail, String fromName,List<String> toEmails, String title, String body, Session session) {
+    public static void sendArrayEmail(String fromEmail, String fromName, List<String> toEmails, String title, String body, Session session) {
         for (String toEmail : toEmails) {
             Message message = new MimeMessage(session);
             sendMessage(message, body, title, toEmail, fromEmail, fromName);
@@ -66,7 +71,7 @@ public class Sender {
 
     private static String getBodyFromComponent(List<Component> components) {
         StringBuilder stringBuilder = new StringBuilder();
-        for(Component component : components) {
+        for (Component component : components) {
             if (component.file() != null) {
                 InputStream htmlFile = Sender.class.getClassLoader().getResourceAsStream(component.file());
                 String result = new BufferedReader(new InputStreamReader(htmlFile))
@@ -82,22 +87,25 @@ public class Sender {
 
     private static void sendMessage(Message message, String body, String title, String toEmail, String fromEmail, String fromName) {
         try {
-            if(fromName != null) {
-                message.setFrom(new InternetAddress(fromEmail, fromName));
+            try {
+                if (fromName != null) {
+                    message.setFrom(new InternetAddress(fromEmail, fromName));
+                }
+                message.setRecipients(
+                        Message.RecipientType.TO, InternetAddress.parse(toEmail));
+                message.setSubject(title);
+
+                MimeBodyPart mimeBodyPart = new MimeBodyPart();
+                mimeBodyPart.setContent(body, "text/html");
+                Multipart multipart = new MimeMultipart();
+                multipart.addBodyPart(mimeBodyPart);
+
+                message.setContent(multipart);
+                Transport.send(message);
+            } catch (MessagingException e) {
+                emailLogging.sendEmailError(e);
             }
-            message.setRecipients(
-                    Message.RecipientType.TO, InternetAddress.parse(toEmail));
-            message.setSubject(title);
-
-            MimeBodyPart mimeBodyPart = new MimeBodyPart();
-            mimeBodyPart.setContent(body, "text/html");
-
-            Multipart multipart = new MimeMultipart();
-            multipart.addBodyPart(mimeBodyPart);
-
-            message.setContent(multipart);
-            Transport.send(message);
-        } catch (MessagingException | UnsupportedEncodingException e) {
+        } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
     }
